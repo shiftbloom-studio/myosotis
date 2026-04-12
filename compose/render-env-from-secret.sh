@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_FILE="${SCRIPT_DIR}/.env.shared"
 SECRET_ID="${ARCHON_SECRET_ID:-shiftbloom-archon/app-env}"
-AWS_REGION="${AWS_REGION:-eu-central-1}"
+AWS_REGION="${AWS_REGION:-eu-west-1}"
 
 require() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -34,4 +34,3 @@ jq -r '
 
 chmod 600 "${OUTPUT_FILE}"
 echo "Rendered ${OUTPUT_FILE} from ${SECRET_ID}"
-

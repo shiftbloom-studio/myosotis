@@ -160,7 +160,7 @@ resource "aws_secretsmanager_secret_version" "app_env" {
     ARCHON_DATA                  = "/opt/shiftbloom-archon/data"
     LOG_LEVEL                    = "info"
     MAX_CONCURRENT_CONVERSATIONS = "10"
-    DATABASE_URL                 = "postgresql://${var.db_username}:${random_password.db.result}@${aws_db_instance.archon.address}:5432/${var.db_name}"
+    DATABASE_URL                 = "postgresql://${var.db_username}:${random_password.db.result}@${aws_db_instance.archon.address}:5432/${var.db_name}?sslmode=require&uselibpqcompat=true"
     DEFAULT_AI_ASSISTANT         = "claude"
     CLAUDE_USE_GLOBAL_AUTH       = "false"
     CLAUDE_CODE_OAUTH_TOKEN      = "REPLACE_ME"
@@ -171,7 +171,8 @@ resource "aws_secretsmanager_secret_version" "app_env" {
     CODEX_ACCOUNT_ID             = "REPLACE_ME"
     GH_TOKEN                     = "REPLACE_ME"
     GITHUB_TOKEN                 = "REPLACE_ME"
-    CADDY_BASIC_AUTH             = "basicauth @protected { admin REPLACE_ME }"
+    CADDY_BASIC_AUTH_USER        = "admin"
+    CADDY_BASIC_AUTH_HASH        = "REPLACE_ME"
   })
 }
 

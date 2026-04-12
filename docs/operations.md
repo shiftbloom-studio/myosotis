@@ -7,7 +7,8 @@
 
 ## Rotation-Sensitive Areas
 
-- `CADDY_BASIC_AUTH`
+- `CADDY_BASIC_AUTH_USER`
+- `CADDY_BASIC_AUTH_HASH`
 - shared Claude credentials
 - shared Codex credentials
 - GitHub token for shared workflows
@@ -31,4 +32,3 @@
 - verify health via `checks/verify-shared-stack.sh`
 - inspect rendered environment file and docker logs
 - rotate secrets in Secrets Manager if credentials are suspected
-

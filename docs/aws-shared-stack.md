@@ -8,6 +8,10 @@
 - Secrets: one Secrets Manager secret for app runtime configuration
 - Admin access: AWS SSM only
 
+If public DNS is not ready yet, the shared stack can be bootstrapped temporarily with
+`DOMAIN=http://<ec2-public-ip>`. That keeps Caddy in front of the app and allows basic-auth
+protected access over HTTP until the final DNS record is delegated.
+
 ## Provisioning Inputs
 
 The Terraform scaffold expects:
@@ -35,7 +39,8 @@ The app secret should be a JSON object containing at least:
 - `PORT`
 - `DATABASE_URL`
 - `ARCHON_DATA`
-- `CADDY_BASIC_AUTH`
+- `CADDY_BASIC_AUTH_USER`
+- `CADDY_BASIC_AUTH_HASH`
 - `CLAUDE_USE_GLOBAL_AUTH`
 - `CLAUDE_CODE_OAUTH_TOKEN` or `CLAUDE_API_KEY`
 - `CODEX_ID_TOKEN`
@@ -43,6 +48,11 @@ The app secret should be a JSON object containing at least:
 - `CODEX_REFRESH_TOKEN`
 - `CODEX_ACCOUNT_ID`
 - `GH_TOKEN`
+
+For AWS RDS PostgreSQL, use
+`?sslmode=require&uselibpqcompat=true` on `DATABASE_URL`. The current shared
+Shiftbloom deployment requires SSL, and this keeps the Node/Postgres client aligned with
+libpq-style `require` semantics instead of strict certificate verification.
 
 ## Shared Stack Update Flow
 
@@ -62,4 +72,3 @@ The initial baseline intentionally stays simple:
 - least-privilege security group between EC2 and RDS
 
 Future upgrades such as SSO, private ALB, WAF, or split admin/public paths can be added later without changing the local developer contract.
-
