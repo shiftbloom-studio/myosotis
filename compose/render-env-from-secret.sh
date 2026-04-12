@@ -29,7 +29,7 @@ jq -r '
   to_entries
   | sort_by(.key)
   | .[]
-  | "\(.key)=\(.value)"
+  | "\(.key)=\((.value | tostring | gsub(\"\\$\"; \"$$\")))"
 ' "${tmp_json}" >"${OUTPUT_FILE}"
 
 chmod 600 "${OUTPUT_FILE}"
