@@ -1,0 +1,6 @@
+worktree:
+  baseBranch: main
+
+env:
+  SHIFTBLOOM_REPO_STANDARD: "v1.0.0"
+

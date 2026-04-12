@@ -1,0 +1,16 @@
+{
+  email ops@shiftbloom.studio
+}
+
+{$DOMAIN} {
+  encode gzip zstd
+
+  @protected {
+    path / /api/* /chat* /dashboard* /workflows*
+  }
+
+  {$CADDY_BASIC_AUTH}
+
+  reverse_proxy app:{$PORT}
+}
+

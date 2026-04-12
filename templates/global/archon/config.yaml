@@ -1,0 +1,7 @@
+# Team-managed placeholder for global Archon settings.
+# Archon v2 primarily uses ~/.archon/.archon/workflows for global behavior.
+# Keep shared per-machine defaults and future env snippets here.
+
+env:
+  SHIFTBLOOM_ARCHON_SETUP_VERSION: "v1.0.0"
+

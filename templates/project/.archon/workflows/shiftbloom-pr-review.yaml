@@ -1,0 +1,10 @@
+name: shiftbloom-pr-review
+description: Shiftbloom review workflow for repository changes
+
+nodes:
+  - id: review
+    prompt: |
+      Review the current changes with a code review mindset.
+      Prioritize bugs, regressions, missing tests, security issues, and
+      operational risks. Findings come first, ordered by severity.
+

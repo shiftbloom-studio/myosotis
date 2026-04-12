@@ -1,0 +1,11 @@
+name: shiftbloom-global-review
+description: Global Shiftbloom review workflow for any repository
+
+nodes:
+  - id: review
+    prompt: |
+      Review the current branch against the repository's default branch.
+      Focus on correctness, regressions, missing tests, data handling,
+      security, and needless complexity.
+      Return findings first, then residual risks.
+

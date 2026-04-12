@@ -1,0 +1,12 @@
+.DS_Store
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+*.tfvars.json
+compose/.env.shared
+compose/.env.generated
+bootstrap/.state/
+*.log
+

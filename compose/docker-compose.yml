@@ -1,0 +1,48 @@
+services:
+  app:
+    image: ghcr.io/coleam00/archon:latest
+    restart: unless-stopped
+    env_file:
+      - .env.shared
+    environment:
+      ARCHON_DOCKER: "true"
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      - ${ARCHON_DATA:-/opt/shiftbloom-archon/data}:/.archon
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - archon
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.shared
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - archon
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  archon:
+    driver: bridge
+

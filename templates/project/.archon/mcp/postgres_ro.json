@@ -1,0 +1,10 @@
+{
+  "postgres_ro": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-postgres"],
+    "env": {
+      "DATABASE_URL": "$POSTGRES_RO_DATABASE_URL"
+    }
+  }
+}
+

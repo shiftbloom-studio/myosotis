@@ -1,0 +1,25 @@
+name: shiftbloom-plan-to-pr
+description: Shiftbloom baseline workflow for taking a task from plan to reviewable change
+
+nodes:
+  - id: plan
+    prompt: |
+      Explore the repository, identify the smallest correct implementation,
+      and produce a decision-complete plan before editing.
+
+  - id: implement
+    depends_on: [plan]
+    loop:
+      prompt: |
+        Read the plan and implement the remaining work in small steps.
+        Run the repository's appropriate validation commands after each step.
+        Stop only when the plan is complete and validation is green.
+      until: ALL_TASKS_COMPLETE
+      fresh_context: true
+
+  - id: review
+    depends_on: [implement]
+    prompt: |
+      Review the resulting change set against the plan and the repository rules.
+      List concrete findings first, then fix any high-confidence issues you found.
+

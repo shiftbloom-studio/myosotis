@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "__GITHUB_TOKEN__"
+      },
+      "description": "Shiftbloom canonical GitHub MCP profile"
+    },
+    "postgres_ro": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "__POSTGRES_RO_DATABASE_URL__"
+      },
+      "description": "Shiftbloom canonical read-only product database MCP profile"
+    }
+  }
+}
+
