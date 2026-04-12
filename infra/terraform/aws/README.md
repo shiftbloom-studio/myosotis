@@ -22,5 +22,5 @@ terraform apply
 
 - The scaffold expects an existing VPC and subnets.
 - The generated secret contains placeholder values for shared AI and GitHub credentials and must be updated after apply.
+- The database password is generated automatically by Terraform and injected into the secret.
 - The EC2 user data only prepares the host. It does not clone this repository or deploy compose automatically.
-

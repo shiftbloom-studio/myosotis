@@ -1,7 +1,7 @@
 variable "aws_region" {
   type        = string
   description = "AWS region for the Shiftbloom Archon stack."
-  default     = "eu-central-1"
+  default     = "eu-west-1"
 }
 
 variable "name_prefix" {
@@ -73,12 +73,6 @@ variable "db_username" {
   default     = "archon"
 }
 
-variable "db_password" {
-  type        = string
-  description = "RDS master password."
-  sensitive   = true
-}
-
 variable "db_instance_class" {
   type        = string
   description = "RDS instance class."
@@ -94,7 +88,7 @@ variable "db_allocated_storage" {
 variable "db_engine_version" {
   type        = string
   description = "PostgreSQL engine version."
-  default     = "16.4"
+  default     = "16.13"
 }
 
 variable "app_secret_name" {
@@ -102,4 +96,3 @@ variable "app_secret_name" {
   description = "Secrets Manager secret name holding compose environment data."
   default     = "shiftbloom-archon/app-env"
 }
-

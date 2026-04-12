@@ -6,6 +6,11 @@ locals {
   }
 }
 
+resource "random_password" "db" {
+  length  = 32
+  special = false
+}
+
 data "aws_ami" "al2023" {
   most_recent = true
   owners      = ["137112412989"]
@@ -38,6 +43,24 @@ resource "aws_iam_role" "ec2_ssm" {
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   role       = aws_iam_role.ec2_ssm.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy" "secret_access" {
+  name = "${var.name_prefix}-secret-access"
+  role = aws_iam_role.ec2_ssm.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_secretsmanager_secret.app_env.arn
+      }
+    ]
+  })
 }
 
 resource "aws_iam_instance_profile" "ec2_ssm" {
@@ -110,7 +133,7 @@ resource "aws_db_instance" "archon" {
   allocated_storage       = var.db_allocated_storage
   db_name                 = var.db_name
   username                = var.db_username
-  password                = var.db_password
+  password                = random_password.db.result
   db_subnet_group_name    = aws_db_subnet_group.archon.name
   vpc_security_group_ids  = [aws_security_group.rds.id]
   skip_final_snapshot     = false
@@ -132,23 +155,23 @@ resource "aws_secretsmanager_secret" "app_env" {
 resource "aws_secretsmanager_secret_version" "app_env" {
   secret_id = aws_secretsmanager_secret.app_env.id
   secret_string = jsonencode({
-    DOMAIN                    = var.domain_name
-    PORT                      = "3000"
-    ARCHON_DATA               = "/opt/shiftbloom-archon/data"
-    LOG_LEVEL                 = "info"
+    DOMAIN                       = var.domain_name
+    PORT                         = "3000"
+    ARCHON_DATA                  = "/opt/shiftbloom-archon/data"
+    LOG_LEVEL                    = "info"
     MAX_CONCURRENT_CONVERSATIONS = "10"
-    DATABASE_URL              = "postgresql://${var.db_username}:${var.db_password}@${aws_db_instance.archon.address}:5432/${var.db_name}"
-    DEFAULT_AI_ASSISTANT      = "claude"
-    CLAUDE_USE_GLOBAL_AUTH    = "false"
-    CLAUDE_CODE_OAUTH_TOKEN   = "REPLACE_ME"
-    CLAUDE_API_KEY            = ""
-    CODEX_ID_TOKEN            = "REPLACE_ME"
-    CODEX_ACCESS_TOKEN        = "REPLACE_ME"
-    CODEX_REFRESH_TOKEN       = "REPLACE_ME"
-    CODEX_ACCOUNT_ID          = "REPLACE_ME"
-    GH_TOKEN                  = "REPLACE_ME"
-    GITHUB_TOKEN              = "REPLACE_ME"
-    CADDY_BASIC_AUTH          = "basicauth @protected { admin REPLACE_ME }"
+    DATABASE_URL                 = "postgresql://${var.db_username}:${random_password.db.result}@${aws_db_instance.archon.address}:5432/${var.db_name}"
+    DEFAULT_AI_ASSISTANT         = "claude"
+    CLAUDE_USE_GLOBAL_AUTH       = "false"
+    CLAUDE_CODE_OAUTH_TOKEN      = "REPLACE_ME"
+    CLAUDE_API_KEY               = ""
+    CODEX_ID_TOKEN               = "REPLACE_ME"
+    CODEX_ACCESS_TOKEN           = "REPLACE_ME"
+    CODEX_REFRESH_TOKEN          = "REPLACE_ME"
+    CODEX_ACCOUNT_ID             = "REPLACE_ME"
+    GH_TOKEN                     = "REPLACE_ME"
+    GITHUB_TOKEN                 = "REPLACE_ME"
+    CADDY_BASIC_AUTH             = "basicauth @protected { admin REPLACE_ME }"
   })
 }
 
@@ -191,4 +214,3 @@ resource "aws_route53_record" "archon" {
   ttl     = 300
   records = [aws_instance.archon.public_ip]
 }
-
