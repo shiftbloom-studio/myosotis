@@ -29,8 +29,8 @@ jq -r '
   to_entries
   | sort_by(.key)
   | .[]
-  | "\(.key)=\((.value | tostring | gsub(\"\\$\"; \"$$\")))"
-' "${tmp_json}" >"${OUTPUT_FILE}"
+  | "\(.key)=\(.value | tostring)"
+' "${tmp_json}" | sed 's/[$]/$$/g' >"${OUTPUT_FILE}"
 
 chmod 600 "${OUTPUT_FILE}"
 echo "Rendered ${OUTPUT_FILE} from ${SECRET_ID}"
