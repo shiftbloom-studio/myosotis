@@ -13,7 +13,7 @@ function getMcpProfilePath(name: string): string {
 
   const root = path.resolve(paths.mcpDir);
   const profilePath = path.resolve(root, `${name}.json`);
-  if (!profilePath.startsWith(`${root}${path.sep}`)) {
+  if (profilePath === root || !profilePath.startsWith(`${root}${path.sep}`)) {
     throw new Error("Invalid MCP server path");
   }
 
@@ -53,7 +53,7 @@ async function writeMcpServers(data: McpServersFile): Promise<void> {
   const files = await fs.readdir(paths.mcpDir, { withFileTypes: true });
   const validNames = new Set(Object.keys(data.mcpServers));
   for (const file of files) {
-    if (!file.isFile() || !file.name.endsWith(".json")) continue;
+    if (file.name === "README.md" || !file.isFile() || !file.name.endsWith(".json")) continue;
 
     const name = path.basename(file.name, ".json");
     if (!validNames.has(name)) {

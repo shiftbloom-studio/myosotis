@@ -21,7 +21,9 @@ function getSkillDir(name: string): string | null {
 
   const root = path.resolve(paths.skillsDir);
   const skillDir = path.resolve(root, name);
-  return skillDir.startsWith(`${root}${path.sep}`) ? skillDir : null;
+  return skillDir !== root && skillDir.startsWith(`${root}${path.sep}`)
+    ? skillDir
+    : null;
 }
 
 async function readSkills(): Promise<SkillEntry[]> {
