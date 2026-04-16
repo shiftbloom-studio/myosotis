@@ -1,49 +1,34 @@
 # Myosotis
 
+![Myosotis Filter Cover](docs/media/cover.jpg)
+
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-black.svg)](./LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)](https://www.typescriptlang.org/)
 [![Docker Compose](https://img.shields.io/badge/Deploy-Docker_Compose-2496ED)](./compose/docker-compose.yml)
 [![AWS](https://img.shields.io/badge/Infra-AWS-FF9900)](./infra/terraform/aws)
 
-Myosotis is an open-source control surface for AI-native workspace setup.
+Myosotis is an open-source control surface for AI-native workspace setup. 
 
-It gives teams a git-first way to manage:
+**This is not another agent harness.**
 
-- MCP server profiles
-- reusable `SKILL.md` packs
-- Claude and Codex instruction layers
-- self-hosted deployment workflows
+Its purpose is to solve **Configuration Fragmentation** and **Team-Wide Onboarding** in an era where AI skills, MCP servers, and best practices are releasing minutely. It provides a unified, syncable baseline for every developer on a team—ensuring every agent has the same tools and domain context while preserving local autonomy.
 
-Instead of hiding this setup behind a database or an internal admin panel, Myosotis keeps the source of truth in plain files you can review, diff, fork, and ship.
+## Why Myosotis?
 
-> Your Team, Your AI Workspace.
+Instead of hiding your agent setups behind a database or a proprietary internal tool, Myosotis keeps the source of truth in **plain files** you can review, diff, fork, and ship.
 
-## Why Myosotis
+- **Instant Team Onboarding**: Turn hours of manual agent configuration into a 60-second bootstrap.
+- **Collective Intelligence**: Shared domain skills (backend, frontend, devops, pr-review) that the whole team uses and improves.
+- **File-Native**: MCP configs, skills, and instructions remain regular repository assets.
+- **Hybrid Execution**: A shared stack on AWS for long-running team workflows, mirrored by local developer environments.
+- **Project Anchors**: Consistent `.archon/`, `AGENTS.md`, and `CLAUDE.md` files synchronized into every product repo.
 
-- Git-first: changes stay readable, reviewable, and easy to revert.
-- File-native: MCP configs, skills, and instructions remain regular repository assets.
-- Self-hostable: local Next.js app, Docker Compose runtime, and AWS EC2 scaffold included.
-- Forkable: bundled starter packs are easy to replace with your own org conventions.
-- Multi-surface: designed for Claude Code, Codex, and custom agent environments.
+## Control Surface
 
-## What You Can Do
+Myosotis includes a Next.js-based control surface that lets you manage your AI workspace visually while keeping the source of truth in git.
 
-### 1. Manage MCP Profiles
-
-Edit canonical MCP commands, arguments, descriptions, and environment placeholders in one place, then sync them back into versioned JSON templates.
-
-### 2. Curate Skill Libraries
-
-Maintain reusable `SKILL.md` directories for prompt-engineered workflows, domain playbooks, and operational recipes.
-
-### 3. Layer Instructions
-
-Keep global and project instruction files for Claude and Codex side by side, with a UI that makes changes obvious before writing them to disk.
-
-### 4. Self-Host the Workspace
-
-Run the app locally for editing or deploy it to EC2 behind Caddy with the included Docker Compose and Terraform scaffold.
+![Myosotis App Screenshot](docs/media/app-screenshot.png)
 
 ## Repository Layout
 
@@ -52,10 +37,10 @@ Run the app locally for editing or deploy it to EC2 behind Caddy with the includ
 - `infra/terraform/aws/` AWS scaffold for EC2, RDS, Secrets Manager, and SSM
 - `templates/` global and project instruction templates
 - `mcp/` canonical MCP profile templates
-- `skills/` bundled starter skills
+- `skills/` shared team skills (backend, frontend, devops, pr-review)
 - `bootstrap/` local sync and setup scripts
-- `checks/` verification scripts
-- `docs/` architecture and operations notes
+- `checks/` verification scripts for local, project, and shared-stack setup
+- `docs/` architecture, onboarding, operations, and rollout guidance
 
 ## Quick Start
 
@@ -111,30 +96,9 @@ terraform apply
 
 Then deploy the compose stack on the target host.
 
-## Open-Source Posture
-
-Myosotis is structured to be reusable outside the originating organization.
-
-That means:
-
-- the app branding now stands on its own
-- the setup flow is documented for public self-hosting
-- contributor docs, support docs, and security guidance are included
-- starter assets in `skills/` and `templates/` can be treated as examples, not hard requirements
-
-Some bundled content still reflects the original Shiftbloom Studio conventions. That is intentional: the repo includes a real starter kit, not an empty shell. Replace those examples with your own names, prompts, and workflows as you fork.
-
-## Built by Shiftbloom
-
-Myosotis is maintained by Shiftbloom Studio.
-
-If you want to help shape tools for open creative engineering, design systems, and AI-native workflow infrastructure:
-
-**Let’s build open -> [join Shiftbloom](https://shiftbloom.studio)**
-
 ## Contributing
 
-Issues, pull requests, and starter-pack improvements are welcome.
+Issues, pull requests, and starter-pack improvements are welcome. Myosotis is structured to be reusable outside the originating organization, with a real starter kit included so you don't have to start from an empty shell.
 
 Start with:
 
@@ -142,14 +106,6 @@ Start with:
 - [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - [SECURITY.md](./SECURITY.md)
 - [SUPPORT.md](./SUPPORT.md)
-
-## Roadmap Ideas
-
-- import/export flows for starter packs
-- multi-workspace support
-- better diff views for prompt and instruction changes
-- starter-pack marketplace patterns
-- deployment presets beyond EC2
 
 ## License
 

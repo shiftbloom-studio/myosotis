@@ -10,3 +10,11 @@ compose/.env.generated
 bootstrap/.state/
 *.log
 
+# Web / JS
+node_modules/
+.next/
+dist/
+build/
+.env.local
+.env.*.local
+*.tsbuildinfo
