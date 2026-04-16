@@ -4,10 +4,10 @@
   "private": true,
   "license": "Apache-2.0",
   "description": "Open-source control surface for MCP profiles, skill packs, and AI instruction layers.",
-  "homepage": "https://github.com/shiftbloom-studio/shiftbloom-ai-tooling-setup",
+  "homepage": "https://github.com/myosotis-app/myosotis",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shiftbloom-studio/shiftbloom-ai-tooling-setup.git"
+    "url": "https://github.com/myosotis-app/myosotis.git"
   },
   "keywords": [
     "mcp",

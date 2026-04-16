@@ -11,7 +11,7 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     volumes:
-      - ${CONFIG_REPO:-/opt/shiftbloom-archon/repo}:/app/repo
+      - ${CONFIG_REPO:-/opt/myosotis/repo}:/app/repo
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/mcp-servers"]
       interval: 30s
@@ -19,7 +19,7 @@ services:
       retries: 3
       start_period: 20s
     networks:
-      - archon
+      - myosotis
 
   caddy:
     image: caddy:2-alpine
@@ -38,12 +38,12 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - archon
+      - myosotis
 
 volumes:
   caddy_data:
   caddy_config:
 
 networks:
-  archon:
+  myosotis:
     driver: bridge

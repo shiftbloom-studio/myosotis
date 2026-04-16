@@ -130,17 +130,22 @@ export default function RootLayout({
               <main className="mx-auto w-full max-w-7xl px-6 py-8 lg:px-12 lg:py-10">
                 {children}
                 <footer className="mt-12 border-t border-border/70 pt-5">
-                  <a
-                    href="https://shiftbloom.studio"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex text-sm font-medium tracking-[-0.01em] text-muted-foreground transition hover:text-foreground"
-                  >
-                    <span className="mr-2 text-muted-foreground">
-                      Let&apos;s build open
-                    </span>
-                    <span className="gradient-text">join Shiftbloom</span>
-                  </a>
+                  {process.env.NEXT_PUBLIC_HOMEPAGE_URL ? (
+                    <a
+                      href={process.env.NEXT_PUBLIC_HOMEPAGE_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex text-sm font-medium tracking-[-0.01em] text-muted-foreground transition hover:text-foreground"
+                    >
+                      <span className="gradient-text">
+                        {process.env.NEXT_PUBLIC_HOMEPAGE_LABEL ?? "Built with Myosotis"}
+                      </span>
+                    </a>
+                  ) : (
+                    <p className="text-sm text-muted-foreground/60">
+                      <span className="gradient-text">Myosotis</span> — open-source AI workspace
+                    </p>
+                  )}
                 </footer>
               </main>
             </div>

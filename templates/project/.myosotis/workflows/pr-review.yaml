@@ -1,5 +1,5 @@
-name: shiftbloom-pr-review
-description: Shiftbloom review workflow for repository changes
+name: pr-review
+description: Review workflow for repository changes
 
 nodes:
   - id: review

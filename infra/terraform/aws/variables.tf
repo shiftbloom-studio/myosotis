@@ -1,13 +1,13 @@
 variable "aws_region" {
   type        = string
-  description = "AWS region for the Shiftbloom Archon stack."
+  description = "AWS region for the Myosotis stack."
   default     = "eu-west-1"
 }
 
 variable "name_prefix" {
   type        = string
   description = "Prefix for all AWS resources."
-  default     = "shiftbloom-archon"
+  default     = "myosotis"
 }
 
 variable "vpc_id" {
@@ -45,32 +45,32 @@ variable "root_volume_size" {
 
 variable "allowed_ingress_cidrs" {
   type        = list(string)
-  description = "CIDRs allowed to reach the public Archon endpoint."
+  description = "CIDRs allowed to reach the public Myosotis endpoint."
   default     = ["0.0.0.0/0"]
 }
 
 variable "route53_zone_id" {
   type        = string
-  description = "Optional Route53 zone ID for archon.shiftbloom.studio."
+  description = "Optional Route53 zone ID for DNS record creation."
   default     = ""
 }
 
 variable "domain_name" {
   type        = string
-  description = "DNS name for the Archon endpoint."
-  default     = "archon.shiftbloom.studio"
+  description = "DNS name for the Myosotis endpoint."
+  default     = "myosotis.example.com"
 }
 
 variable "db_name" {
   type        = string
   description = "RDS database name."
-  default     = "archon"
+  default     = "myosotis"
 }
 
 variable "db_username" {
   type        = string
   description = "RDS master username."
-  default     = "archon"
+  default     = "myosotis"
 }
 
 variable "db_instance_class" {
@@ -94,5 +94,5 @@ variable "db_engine_version" {
 variable "app_secret_name" {
   type        = string
   description = "Secrets Manager secret name holding compose environment data."
-  default     = "shiftbloom-archon/app-env"
+  default     = "myosotis/app-env"
 }

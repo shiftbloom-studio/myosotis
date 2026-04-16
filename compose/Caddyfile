@@ -1,5 +1,5 @@
 {
-  email ops@shiftbloom.studio
+  email {$ACME_EMAIL}
 }
 
 {$DOMAIN} {

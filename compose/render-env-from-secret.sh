@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_FILE="${SCRIPT_DIR}/.env.shared"
-SECRET_ID="${ARCHON_SECRET_ID:-shiftbloom-archon/app-env}"
+SECRET_ID="${MYOSOTIS_SECRET_ID:-myosotis/app-env}"
 AWS_REGION="${AWS_REGION:-eu-west-1}"
 
 require() {

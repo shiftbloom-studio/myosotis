@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# fix-domain.sh — Switch Archon from IP-fallback to ai.shiftbloom.studio
+# fix-domain.sh — Switch Myosotis from IP-fallback to a real domain
 # Run on EC2 via SSM:
-#   aws ssm start-session --target i-09f6afb95a0c61c6e --region eu-west-1
-#   sudo bash /opt/shiftbloom-archon/compose/fix-domain.sh
+#   aws ssm start-session --target <instance-id> --region <region>
+#   sudo bash /opt/myosotis/compose/fix-domain.sh
 set -euo pipefail
 
-SECRET_ID="shiftbloom-archon/app-env"
-REGION="eu-west-1"
-NEW_DOMAIN="ai.shiftbloom.studio"
-COMPOSE_DIR="/opt/shiftbloom-archon/compose"
+SECRET_ID="${MYOSOTIS_SECRET_ID:-myosotis/app-env}"
+REGION="${AWS_REGION:-eu-west-1}"
+NEW_DOMAIN="${1:-}"
+COMPOSE_DIR="/opt/myosotis/compose"
+
+if [ -z "${NEW_DOMAIN}" ]; then
+  echo "Usage: $0 <new-domain>"
+  exit 1
+fi
 
 echo "=== Step 0: Preflight ==="
 echo "Checking DNS for ${NEW_DOMAIN}..."
@@ -25,7 +30,6 @@ fi
 
 echo ""
 echo "=== Step 1: Update DOMAIN in Secrets Manager ==="
-# Read current secret
 CURRENT_JSON=$(aws secretsmanager get-secret-value \
   --secret-id "${SECRET_ID}" \
   --region "${REGION}" \
@@ -35,7 +39,6 @@ CURRENT_JSON=$(aws secretsmanager get-secret-value \
 echo "Current DOMAIN value:"
 echo "${CURRENT_JSON}" | jq -r '.DOMAIN'
 
-# Update DOMAIN to the bare hostname (Caddy auto-provisions HTTPS)
 UPDATED_JSON=$(echo "${CURRENT_JSON}" | jq --arg d "${NEW_DOMAIN}" '.DOMAIN = $d')
 
 aws secretsmanager put-secret-value \

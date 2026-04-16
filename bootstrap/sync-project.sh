@@ -11,9 +11,8 @@ TARGET_REPO="${1:-$PWD}"
 
 copy_managed_file "${REPO_ROOT}/templates/project/AGENTS.md" "${TARGET_REPO}/AGENTS.md"
 copy_managed_file "${REPO_ROOT}/templates/project/CLAUDE.md" "${TARGET_REPO}/CLAUDE.md"
-copy_managed_file "${REPO_ROOT}/templates/project/.archon/config.yaml" "${TARGET_REPO}/.archon/config.yaml"
-copy_managed_dir "${REPO_ROOT}/templates/project/.archon/mcp" "${TARGET_REPO}/.archon/mcp"
-copy_managed_dir "${REPO_ROOT}/templates/project/.archon/workflows" "${TARGET_REPO}/.archon/workflows"
+copy_managed_file "${REPO_ROOT}/templates/project/.myosotis/config.yaml" "${TARGET_REPO}/.myosotis/config.yaml"
+copy_managed_dir "${REPO_ROOT}/templates/project/.myosotis/mcp" "${TARGET_REPO}/.myosotis/mcp"
+copy_managed_dir "${REPO_ROOT}/templates/project/.myosotis/workflows" "${TARGET_REPO}/.myosotis/workflows"
 
 log "Project template synchronized to ${TARGET_REPO}"
-

@@ -1,0 +1,6 @@
+worktree:
+  baseBranch: main
+
+env:
+  MYOSOTIS_REPO_STANDARD: "v1.0.0"
+
