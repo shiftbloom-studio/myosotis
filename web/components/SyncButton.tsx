@@ -60,26 +60,37 @@ export function SyncButton() {
     (status?.created.length ?? 0) +
     (status?.deleted.length ?? 0);
 
+  const statusText = message
+    ? message
+    : changeCount > 0
+      ? `${changeCount} file${changeCount === 1 ? "" : "s"} ready to sync`
+      : "Working tree is clean";
+
   return (
-    <div className="flex items-center gap-3">
-      {message && (
-        <span className="text-xs text-muted-foreground">{message}</span>
-      )}
-      {changeCount > 0 && !syncing && (
-        <Badge variant="secondary" className="text-xs tabular-nums">
-          {changeCount} pending
+    <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.14)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
+            Git Sync
+          </p>
+          <p className="text-sm leading-6 text-white/70">{statusText}</p>
+        </div>
+        <Badge
+          variant="secondary"
+          className="border-0 bg-white/[0.08] px-2.5 text-[11px] text-white/70"
+        >
+          {changeCount > 0 ? `${changeCount} pending` : "in sync"}
         </Badge>
-      )}
+      </div>
       <Button
         onClick={handleSync}
         disabled={syncing || (status?.isClean ?? true)}
-        size="sm"
         className={
           changeCount > 0
-            ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-px"
-            : ""
+            ? "modern-btn mt-4 h-11 w-full rounded-full border-0 text-sm font-semibold text-white hover:text-white"
+            : "mt-4 h-11 w-full rounded-full border border-white/10 bg-white/[0.05] text-sm font-semibold text-white/55 hover:bg-white/[0.08] hover:text-white"
         }
-        variant={changeCount > 0 ? "default" : "outline"}
+        variant="ghost"
       >
         {syncing ? (
           <>

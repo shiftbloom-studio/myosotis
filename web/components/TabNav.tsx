@@ -8,6 +8,7 @@ const tabs = [
   {
     href: "/mcp-servers",
     label: "MCP Servers",
+    description: "Shared command profiles and env placeholders.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
@@ -20,6 +21,7 @@ const tabs = [
   {
     href: "/skills",
     label: "Skills",
+    description: "Canonical SKILL.md packs for every surface.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -30,6 +32,7 @@ const tabs = [
   {
     href: "/instructions",
     label: "Instructions",
+    description: "Global and project instruction files.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
@@ -46,28 +49,50 @@ export function TabNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-card/50 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-5xl items-center gap-1 px-6">
+    <nav className="space-y-3" aria-label="Primary">
+      <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
+        Workspace
+      </p>
+      <div className="grid gap-2 md:grid-cols-3 lg:grid-cols-1">
         {tabs.map((tab) => {
           const isActive = pathname.startsWith(tab.href);
           return (
             <Link
               key={tab.href}
               href={tab.href}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200",
+                "group relative rounded-[1.6rem] border px-4 py-4 transition-all duration-300",
                 isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "border-white/18 bg-white/[0.08] text-white shadow-[0_20px_40px_rgba(0,0,0,0.16)]"
+                  : "border-white/10 text-white/68 hover:border-white/18 hover:bg-white/[0.04] hover:text-white"
               )}
             >
-              <span className={cn(isActive ? "text-primary" : "text-muted-foreground/70")}>
-                {tab.icon}
-              </span>
-              {tab.label}
-              {isActive && (
-                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-primary" />
-              )}
+              <div className="flex items-start gap-3">
+                <div
+                  className={cn(
+                    "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border transition-all duration-300",
+                    isActive
+                      ? "border-white/10 bg-primary/15 text-primary"
+                      : "border-white/10 bg-white/[0.03] text-white/55 group-hover:border-white/15 group-hover:text-white/80"
+                  )}
+                >
+                  {tab.icon}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium tracking-[-0.02em]">
+                    {tab.label}
+                  </p>
+                  <p
+                    className={cn(
+                      "mt-1 text-sm leading-5",
+                      isActive ? "text-white/72" : "text-white/45"
+                    )}
+                  >
+                    {tab.description}
+                  </p>
+                </div>
+              </div>
             </Link>
           );
         })}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageIntro } from "@/components/PageIntro";
 import { McpServerEditor } from "@/components/McpServerEditor";
 import type { McpServer } from "@/lib/validators";
 
@@ -10,25 +11,45 @@ export default function McpServersPage() {
   );
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchServers() {
-    try {
-      const res = await fetch("/api/mcp-servers");
-      const json = await res.json();
-      if (json.success) {
-        setServers(json.data);
-      } else {
-        setError(json.error);
-      }
-    } catch {
-      setError("Failed to load MCP servers");
+  async function readServers() {
+    const res = await fetch("/api/mcp-servers");
+    const json = await res.json();
+
+    if (!res.ok || !json.success) {
+      throw new Error(json.error ?? "Failed to load MCP servers");
     }
+
+    return json.data as Record<string, McpServer>;
   }
 
   useEffect(() => {
-    fetchServers();
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const data = await readServers();
+        if (cancelled) return;
+        setError(null);
+        setServers(data);
+      } catch (nextError) {
+        if (cancelled) return;
+        setError(
+          nextError instanceof Error
+            ? nextError.message
+            : "Failed to load MCP servers"
+        );
+      }
+    }
+
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleSave(updated: Record<string, McpServer>) {
+    setError(null);
     const res = await fetch("/api/mcp-servers", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -42,51 +63,58 @@ export default function McpServersPage() {
     }
   }
 
-  if (error) {
-    return (
-      <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">
-        {error}
-      </div>
-    );
-  }
-
-  if (!servers) {
-    return (
-      <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        <svg
-          className="mr-2 h-4 w-4 animate-spin"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-        Loading MCP servers…
-      </div>
-    );
-  }
+  const serverCount = Object.keys(servers ?? {}).length;
+  const envVarCount = Object.values(servers ?? {}).reduce(
+    (count, server) => count + Object.keys(server.env ?? {}).length,
+    0
+  );
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">
-          MCP Server Profiles
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Manage canonical MCP server profiles shared across the team. Changes
-          update{" "}
-          <code className="rounded-md bg-muted/60 px-1.5 py-0.5 font-mono text-xs">
-            mcp/
-          </code>{" "}
-          and{" "}
-          <code className="rounded-md bg-muted/60 px-1.5 py-0.5 font-mono text-xs">
-            templates/global/claude/mcp-servers.json
-          </code>
-          .
-        </p>
-      </div>
-      <McpServerEditor servers={servers} onSave={handleSave} />
+    <div className="space-y-8">
+      <PageIntro
+        eyebrow="MCP Registry"
+        title="Shared runtime profiles, ready to sync."
+        description="Update canonical MCP commands, arguments, and environment placeholders for the team. Changes write back to the shared JSON template and the individual profile files under mcp/."
+        stats={[
+          {
+            label: "Profiles",
+            value: servers ? String(serverCount).padStart(2, "0") : "—",
+          },
+          {
+            label: "Env placeholders",
+            value: servers ? String(envVarCount).padStart(2, "0") : "—",
+          },
+          { label: "Distribution targets", value: "02" },
+        ]}
+        details={[
+          {
+            label: "Template Output",
+            value: "templates/global/claude/mcp-servers.json",
+          },
+          { label: "Profile Directory", value: "mcp/" },
+        ]}
+      />
+
+      {error ? (
+        <div className="rounded-[1.75rem] border border-destructive/20 bg-white/70 p-6 text-sm leading-6 text-destructive shadow-[0_18px_40px_rgba(15,15,15,0.04)]">
+          {error}
+        </div>
+      ) : !servers ? (
+        <div className="sb-panel flex h-48 items-center justify-center rounded-[1.75rem] px-6 text-sm text-muted-foreground">
+          <svg
+            className="mr-2 h-4 w-4 animate-spin"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+          Loading MCP servers…
+        </div>
+      ) : (
+        <McpServerEditor servers={servers} onSave={handleSave} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { PageIntro } from "@/components/PageIntro";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
@@ -37,10 +38,11 @@ export default function InstructionsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchInstructions = useCallback(async () => {
+    setError(null);
     try {
       const res = await fetch("/api/instructions");
       const json = await res.json();
-      if (json.success) {
+      if (res.ok && json.success) {
         setData(json.data);
         setDirty({});
       } else {
@@ -87,81 +89,107 @@ export default function InstructionsPage() {
     }
   }
 
-  if (error) {
-    return (
-      <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">
-        {error}
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        <svg
-          className="mr-2 h-4 w-4 animate-spin"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-        Loading instructions…
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Instructions</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Edit global and project-level CLAUDE.md and AGENTS.md files.
-          </p>
-        </div>
-        <Button
-          onClick={handleSave}
-          disabled={saving || !hasDirtyChanges}
-          className={
-            hasDirtyChanges ? "shadow-md shadow-primary/20" : ""
-          }
-        >
-          {saving
-            ? "Saving…"
-            : hasDirtyChanges
-              ? "Save Changes"
-              : "No Changes"}
-        </Button>
-      </div>
+    <div className="space-y-8">
+      <PageIntro
+        eyebrow="Instruction Packs"
+        title="Global and project instructions in one place."
+        description="Edit the canonical Claude and Codex instruction files for both global and project scope. Unsaved tabs remain visible until you write them back to disk."
+        stats={[
+          { label: "Files", value: "04" },
+          { label: "Scopes", value: "02" },
+          {
+            label: "Unsaved",
+            value: String(Object.keys(dirty).length).padStart(2, "0"),
+          },
+        ]}
+        details={[
+          { label: "Global Files", value: "templates/global/claude + codex" },
+          { label: "Project Files", value: "templates/project/" },
+        ]}
+      />
 
-      <div className="rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm">
-        <Tabs defaultValue="global-claude">
-          <TabsList className="bg-muted/50">
-            {INSTRUCTION_FILES.map((f) => (
-              <TabsTrigger key={f.key} value={f.key} className="text-xs">
-                {f.label}
-                {dirty[f.key] !== undefined && (
-                  <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-                )}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {INSTRUCTION_FILES.map((f) => (
-            <TabsContent key={f.key} value={f.key}>
-              <p className="mb-3 font-mono text-[11px] text-muted-foreground/60">
-                {f.file}
+      {error ? (
+        <div className="rounded-[1.75rem] border border-destructive/20 bg-white/70 p-6 text-sm leading-6 text-destructive shadow-[0_18px_40px_rgba(15,15,15,0.04)]">
+          {error}
+        </div>
+      ) : !data ? (
+        <div className="sb-panel flex h-48 items-center justify-center rounded-[1.75rem] px-6 text-sm text-muted-foreground">
+          <svg
+            className="mr-2 h-4 w-4 animate-spin"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+          Loading instructions…
+        </div>
+      ) : (
+        <div className="sb-panel rounded-[2rem] p-6 sm:p-8">
+          <div className="flex flex-col gap-4 border-b border-border/70 pb-6 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-primary/70">
+                Editor
               </p>
-              <MarkdownEditor
-                value={getValue(f.key)}
-                onChange={(v) => handleChange(f.key, v)}
-                placeholder={`# ${f.label} Instructions...`}
-              />
-            </TabsContent>
-          ))}
-        </Tabs>
-      </div>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+                Switch between global and project instruction files without
+                leaving the workspace.
+              </p>
+            </div>
+            <Button
+              onClick={handleSave}
+              disabled={saving || !hasDirtyChanges}
+              className={
+                hasDirtyChanges
+                  ? "modern-btn h-10 rounded-full border-0 px-5 text-sm font-semibold text-white hover:text-white"
+                  : "h-10 rounded-full border border-border/70 bg-white/60 px-5 text-sm font-semibold text-muted-foreground"
+              }
+            >
+              {saving
+                ? "Saving…"
+                : hasDirtyChanges
+                  ? "Save Changes"
+                  : "No Changes"}
+            </Button>
+          </div>
+
+          <div className="pt-6">
+            <Tabs defaultValue="global-claude">
+              <TabsList
+                variant="line"
+                className="h-auto flex-wrap gap-2 rounded-none bg-transparent p-0"
+              >
+                {INSTRUCTION_FILES.map((f) => (
+                  <TabsTrigger
+                    key={f.key}
+                    value={f.key}
+                    className="rounded-full border border-border/70 px-4 py-2 text-xs data-active:border-primary/20 data-active:bg-white data-active:text-foreground"
+                  >
+                    {f.label}
+                    {dirty[f.key] !== undefined && (
+                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+                    )}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {INSTRUCTION_FILES.map((f) => (
+                <TabsContent key={f.key} value={f.key} className="mt-6">
+                  <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
+                    {f.file}
+                  </p>
+                  <MarkdownEditor
+                    value={getValue(f.key)}
+                    onChange={(v) => handleChange(f.key, v)}
+                    placeholder={`# ${f.label} Instructions...`}
+                  />
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

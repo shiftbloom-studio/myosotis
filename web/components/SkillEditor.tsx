@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,18 @@ interface SkillEditorProps {
   onDelete: (name: string) => Promise<void>;
 }
 
+function getPreview(content: string) {
+  const lines = content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return (
+    lines.find((line) => !line.startsWith("#") && !line.startsWith("-")) ??
+    "No description yet."
+  );
+}
+
 export function SkillEditor({
   skills,
   onSave,
@@ -32,8 +44,31 @@ export function SkillEditor({
   const [newContent, setNewContent] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const selectedSkill = useMemo(
+    () => skills.find((skill) => skill.name === selected) ?? null,
+    [selected, skills]
+  );
+
+  useEffect(() => {
+    if (creating) return;
+
+    if (selectedSkill) {
+      setContent(selectedSkill.content);
+      return;
+    }
+
+    if (skills.length === 0) {
+      setSelected(null);
+      setContent("");
+      return;
+    }
+
+    setSelected(skills[0].name);
+    setContent(skills[0].content);
+  }, [creating, selectedSkill, skills]);
+
   function selectSkill(name: string) {
-    const skill = skills.find((s) => s.name === name);
+    const skill = skills.find((entry) => entry.name === name);
     if (!skill) return;
     setSelected(name);
     setContent(skill.content);
@@ -45,157 +80,244 @@ export function SkillEditor({
     setSelected(null);
     setNewName("");
     setNewContent(
-      "# Skill Name\n\nDescribe what this skill does.\n\n## Expectations\n\n- \n"
+      "---\nname: new-skill\ndescription: Explain when to use this skill.\n---\n\n# New Skill\n\nDescribe what this skill does.\n\n## Expectations\n\n- \n"
     );
   }
 
   async function handleSave() {
     if (!selected) return;
+
     setSaving(true);
-    await onSave({ name: selected, content });
-    setSaving(false);
+    try {
+      await onSave({ name: selected, content });
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleCreate() {
-    if (!newName.trim()) return;
+    const nextName = newName.trim();
+
+    if (!nextName) return;
+
     setSaving(true);
-    await onCreate({ name: newName.trim(), content: newContent });
-    setSaving(false);
-    setCreating(false);
+    try {
+      await onCreate({ name: nextName, content: newContent });
+      setSelected(nextName);
+      setContent(newContent);
+      setCreating(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleDelete(name: string) {
     await onDelete(name);
+
     if (selected === name) {
       setSelected(null);
       setContent("");
     }
+
+    if (creating) {
+      setCreating(false);
+    }
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-      {/* Sidebar */}
-      <div className="space-y-1.5">
-        <p className="mb-2 text-[11px] font-medium uppercase tracking-widest text-muted-foreground/60">
-          Skills
-        </p>
-        {skills.map((skill) => (
-          <button
-            key={skill.name}
-            onClick={() => selectSkill(skill.name)}
-            className={cn(
-              "group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200",
-              selected === skill.name
-                ? "bg-primary/10 text-primary font-medium"
-                : "text-foreground/80 hover:bg-muted/60"
-            )}
+    <div className="grid gap-10 xl:grid-cols-[320px_minmax(0,1fr)]">
+      <aside className="space-y-4">
+        <div className="flex items-end justify-between gap-4 border-b border-border/70 pb-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
+              Library Index
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Browse and edit reusable skill directories synced into every
+              agent surface.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-10 rounded-full border border-border/70 bg-white/70 px-4 text-sm font-semibold text-foreground hover:border-primary/15 hover:bg-white"
+            onClick={startCreate}
           >
-            <div className="flex items-center gap-2 overflow-hidden">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={cn(
-                  "shrink-0",
-                  selected === skill.name
-                    ? "text-primary"
-                    : "text-muted-foreground/50"
-                )}
-              >
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-              </svg>
-              <span className="truncate font-mono text-xs">{skill.name}</span>
-            </div>
-            <button
-              className="shrink-0 rounded px-1 text-[10px] text-destructive opacity-0 transition-opacity hover:bg-destructive/10 group-hover:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(skill.name);
-              }}
-            >
-              Delete
-            </button>
-          </button>
-        ))}
-        <button
-          onClick={startCreate}
-          className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border/60 px-3 py-2.5 text-xs text-muted-foreground transition-all hover:border-primary/40 hover:text-primary"
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          New Skill
-        </button>
-      </div>
+            New
+          </Button>
+        </div>
 
-      {/* Main content */}
-      <div>
+        <div className="space-y-2">
+          {skills.length > 0 ? (
+            skills.map((skill, index) => {
+              const isActive = !creating && selected === skill.name;
+
+              return (
+                <div
+                  key={skill.name}
+                  className={cn(
+                    "rounded-[1.6rem] border p-4 transition-all duration-300",
+                    isActive
+                      ? "border-primary/20 bg-white shadow-[0_16px_36px_rgba(15,15,15,0.05)]"
+                      : "border-border/60 bg-transparent hover:border-primary/15 hover:bg-white/70"
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <button
+                      type="button"
+                      onClick={() => selectSkill(skill.name)}
+                      className="flex-1 text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-[11px] text-primary/70">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <div>
+                          <p className="text-sm font-medium tracking-[-0.02em] text-foreground">
+                            {skill.name}
+                          </p>
+                          <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                            {getPreview(skill.content)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2 pl-7">
+                        <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+                          {skill.content.split("\n").length} lines
+                        </span>
+                        <span className="rounded-full border border-border/70 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+                          SKILL.md
+                        </span>
+                      </div>
+                    </button>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      className="mt-1 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => handleDelete(skill.name)}
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4h8v2" />
+                        <path d="M19 6l-1 14H6L5 6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="rounded-[1.6rem] border border-dashed border-border/70 p-6 text-sm leading-6 text-muted-foreground">
+              No skills exist yet. Start by creating the first canonical skill
+              for your team.
+            </div>
+          )}
+        </div>
+      </aside>
+
+      <div className="sb-panel rounded-[2rem] p-6 sm:p-8">
         {creating ? (
-          <div className="rounded-2xl border-2 border-primary/30 bg-card/80 p-6 shadow-lg shadow-primary/5 backdrop-blur-sm">
-            <h3 className="mb-4 text-sm font-semibold">Create New Skill</h3>
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs">Skill Name (lowercase-hyphen)</Label>
+          <div className="space-y-6">
+            <div className="flex flex-col gap-4 border-b border-border/70 pb-6 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-3">
+                <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-primary/70">
+                  New Skill
+                </p>
+                <div>
+                  <h3 className="text-3xl font-semibold tracking-[-0.04em] text-foreground">
+                    Add a reusable skill pack
+                  </h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+                    Create a new skill directory with a canonical{" "}
+                    <span className="font-mono text-foreground/80">
+                      SKILL.md
+                    </span>{" "}
+                    entry for the team.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-10 rounded-full border border-border/70 bg-white/60 px-4 text-sm font-semibold text-foreground hover:bg-white"
+                  onClick={() => setCreating(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  className="modern-btn h-10 rounded-full border-0 px-5 text-sm font-semibold text-white hover:text-white"
+                  onClick={handleCreate}
+                  disabled={saving}
+                >
+                  {saving ? "Creating…" : "Create Skill"}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                  Skill Name
+                </Label>
                 <Input
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. shiftbloom-analytics"
-                  className="bg-background/50"
+                  placeholder="shiftbloom-analytics"
+                  className="h-11 rounded-2xl border-border/70 bg-white/70 px-4"
                 />
               </div>
+
               <MarkdownEditor
                 value={newContent}
                 onChange={setNewContent}
                 placeholder="# Skill Title..."
               />
-              <div className="flex gap-2 pt-1">
-                <Button
-                  onClick={handleCreate}
-                  disabled={saving}
-                  className="shadow-md shadow-primary/20"
-                >
-                  {saving ? "Creating…" : "Create Skill"}
-                </Button>
-                <Button variant="ghost" onClick={() => setCreating(false)}>
-                  Cancel
-                </Button>
-              </div>
             </div>
           </div>
-        ) : selected ? (
-          <div className="rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                  </svg>
+        ) : selectedSkill ? (
+          <div className="space-y-6">
+            <div className="flex flex-col gap-4 border-b border-border/70 pb-6 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-3">
+                <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-primary/70">
+                  Editing
+                </p>
+                <div>
+                  <h3 className="text-3xl font-semibold tracking-[-0.04em] text-foreground">
+                    {selectedSkill.name}
+                  </h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+                    Update the skill instructions and sync them back into the
+                    canonical repository state.
+                  </p>
                 </div>
-                <h3 className="font-mono text-sm font-semibold">{selected}</h3>
               </div>
+
               <Button
+                type="button"
+                className="modern-btn h-10 rounded-full border-0 px-5 text-sm font-semibold text-white hover:text-white"
                 onClick={handleSave}
                 disabled={saving}
-                size="sm"
-                className="shadow-md shadow-primary/20"
               >
-                {saving ? "Saving…" : "Save"}
+                {saving ? "Saving…" : "Save Skill"}
               </Button>
             </div>
+
             <MarkdownEditor
               value={content}
               onChange={setContent}
@@ -203,8 +325,14 @@ export function SkillEditor({
             />
           </div>
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border/40 text-sm text-muted-foreground/60">
-            Select a skill to edit, or create a new one.
+          <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 rounded-[1.75rem] border border-dashed border-border/70 bg-white/45 px-6 text-center">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              Select a skill
+            </p>
+            <p className="max-w-sm text-sm leading-6 text-muted-foreground">
+              Choose an existing skill from the library or create a new one to
+              start editing.
+            </p>
           </div>
         )}
       </div>

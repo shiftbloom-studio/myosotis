@@ -8,7 +8,12 @@ interface SkillEntry {
   content: string;
 }
 
+async function ensureSkillsDir() {
+  await fs.mkdir(paths.skillsDir, { recursive: true });
+}
+
 async function readSkills(): Promise<SkillEntry[]> {
+  await ensureSkillsDir();
   const entries = await fs.readdir(paths.skillsDir, { withFileTypes: true });
   const skills: SkillEntry[] = [];
 
@@ -51,6 +56,7 @@ export async function POST(request: Request) {
       );
     }
 
+    await ensureSkillsDir();
     const skillDir = path.join(paths.skillsDir, name);
     await fs.mkdir(skillDir, { recursive: true });
     await fs.writeFile(path.join(skillDir, "SKILL.md"), content, "utf-8");
