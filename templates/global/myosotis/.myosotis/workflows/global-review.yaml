@@ -1,5 +1,5 @@
-name: shiftbloom-global-review
-description: Global Shiftbloom review workflow for any repository
+name: global-review
+description: Global review workflow for any repository
 
 nodes:
   - id: review

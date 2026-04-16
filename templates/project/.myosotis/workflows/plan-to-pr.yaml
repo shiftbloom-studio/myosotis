@@ -1,5 +1,5 @@
-name: shiftbloom-plan-to-pr
-description: Shiftbloom baseline workflow for taking a task from plan to reviewable change
+name: plan-to-pr
+description: Baseline workflow for taking a task from plan to reviewable change
 
 nodes:
   - id: plan

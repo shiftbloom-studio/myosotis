@@ -16,11 +16,10 @@ check_file() {
 
 check_file "${TARGET_REPO}/AGENTS.md"
 check_file "${TARGET_REPO}/CLAUDE.md"
-check_file "${TARGET_REPO}/.archon/config.yaml"
-check_file "${TARGET_REPO}/.archon/mcp/github.json"
-check_file "${TARGET_REPO}/.archon/mcp/postgres_ro.json"
-check_file "${TARGET_REPO}/.archon/workflows/shiftbloom-plan-to-pr.yaml"
-check_file "${TARGET_REPO}/.archon/workflows/shiftbloom-pr-review.yaml"
+check_file "${TARGET_REPO}/.myosotis/config.yaml"
+check_file "${TARGET_REPO}/.myosotis/mcp/github.json"
+check_file "${TARGET_REPO}/.myosotis/mcp/postgres_ro.json"
+check_file "${TARGET_REPO}/.myosotis/workflows/plan-to-pr.yaml"
+check_file "${TARGET_REPO}/.myosotis/workflows/pr-review.yaml"
 
 exit "${failures}"
-

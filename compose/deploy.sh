@@ -8,7 +8,6 @@ if [[ ! -f "${SCRIPT_DIR}/.env.shared" ]]; then
   exit 1
 fi
 
-docker compose -f "${SCRIPT_DIR}/docker-compose.yml" pull
-docker compose -f "${SCRIPT_DIR}/docker-compose.yml" up -d
-docker compose -f "${SCRIPT_DIR}/docker-compose.yml" ps
-
+docker compose --env-file "${SCRIPT_DIR}/.env.shared" -f "${SCRIPT_DIR}/docker-compose.yml" pull
+docker compose --env-file "${SCRIPT_DIR}/.env.shared" -f "${SCRIPT_DIR}/docker-compose.yml" up -d --build
+docker compose --env-file "${SCRIPT_DIR}/.env.shared" -f "${SCRIPT_DIR}/docker-compose.yml" ps

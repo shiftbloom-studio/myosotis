@@ -1,6 +1,6 @@
 # Terraform AWS Scaffold
 
-This scaffold provisions the minimum shared Shiftbloom Archon stack:
+This scaffold provisions the minimum shared Myosotis stack:
 
 - EC2 runtime host
 - RDS PostgreSQL for Archon metadata

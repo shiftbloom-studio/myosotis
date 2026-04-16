@@ -31,15 +31,14 @@ check_file "${HOME}/.codex/config.toml"
 check_file "${HOME}/.codex/AGENTS.md"
 check_file "${HOME}/.claude/CLAUDE.md"
 check_file "${HOME}/.claude/mcp-configs/mcp-servers.json"
-check_file "${HOME}/.archon/config.yaml"
-check_file "${HOME}/.archon/.archon/workflows/shiftbloom-global-review.yaml"
-check_file "${HOME}/.agents/skills/shiftbloom-archon/SKILL.md"
-check_file "${HOME}/.codex/skills/shiftbloom-pr-review/SKILL.md"
-check_file "${HOME}/.claude/skills/shiftbloom-devops/SKILL.md"
+check_file "${HOME}/.myosotis/config.yaml"
+check_file "${HOME}/.myosotis/.myosotis/workflows/global-review.yaml"
+check_file "${HOME}/.agents/skills/myosotis/SKILL.md"
+check_file "${HOME}/.codex/skills/pr-review/SKILL.md"
+check_file "${HOME}/.claude/skills/devops/SKILL.md"
 
 if rg -n 'REPLACE_ME' "${HOME}/.codex/config.toml" "${HOME}/.claude/mcp-configs/mcp-servers.json" >/dev/null 2>&1; then
   printf '[warn] Placeholder values still exist in global Codex or Claude config.\n'
 fi
 
 exit "${failures}"
-

@@ -1,17 +1,17 @@
 {
-  email ops@shiftbloom.studio
+  email {$ACME_EMAIL}
 }
 
 {$DOMAIN} {
   encode gzip zstd
 
   @protected {
-    path / /api/* /chat* /dashboard* /workflows*
+    path / /api/* /mcp-servers* /skills* /instructions*
   }
 
   basic_auth @protected {
     {$CADDY_BASIC_AUTH_USER} {$CADDY_BASIC_AUTH_HASH}
   }
 
-  reverse_proxy app:{$PORT}
+  reverse_proxy app:3000
 }

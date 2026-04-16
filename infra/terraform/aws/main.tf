@@ -1,6 +1,6 @@
 locals {
   tags = {
-    Project     = "shiftbloom-archon"
+    Project     = "myosotis"
     ManagedBy   = "terraform"
     Environment = "shared"
   }
@@ -70,7 +70,7 @@ resource "aws_iam_instance_profile" "ec2_ssm" {
 
 resource "aws_security_group" "ec2" {
   name        = "${var.name_prefix}-ec2"
-  description = "Public access to Shiftbloom Archon"
+  description = "Public access to Myosotis"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -99,7 +99,7 @@ resource "aws_security_group" "ec2" {
 
 resource "aws_security_group" "rds" {
   name        = "${var.name_prefix}-rds"
-  description = "RDS access from the Shiftbloom Archon EC2 host"
+  description = "RDS access from the Myosotis EC2 host"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -119,13 +119,13 @@ resource "aws_security_group" "rds" {
   tags = local.tags
 }
 
-resource "aws_db_subnet_group" "archon" {
+resource "aws_db_subnet_group" "myosotis" {
   name       = "${var.name_prefix}-db-subnets"
   subnet_ids = var.private_subnet_ids
   tags       = local.tags
 }
 
-resource "aws_db_instance" "archon" {
+resource "aws_db_instance" "myosotis" {
   identifier              = "${var.name_prefix}-db"
   engine                  = "postgres"
   engine_version          = var.db_engine_version
@@ -134,7 +134,7 @@ resource "aws_db_instance" "archon" {
   db_name                 = var.db_name
   username                = var.db_username
   password                = random_password.db.result
-  db_subnet_group_name    = aws_db_subnet_group.archon.name
+  db_subnet_group_name    = aws_db_subnet_group.myosotis.name
   vpc_security_group_ids  = [aws_security_group.rds.id]
   skip_final_snapshot     = false
   deletion_protection     = true
@@ -148,35 +148,23 @@ resource "aws_db_instance" "archon" {
 
 resource "aws_secretsmanager_secret" "app_env" {
   name        = var.app_secret_name
-  description = "Runtime environment for the Shiftbloom Archon shared stack"
+  description = "Runtime environment for the Myosotis shared stack"
   tags        = local.tags
 }
 
 resource "aws_secretsmanager_secret_version" "app_env" {
   secret_id = aws_secretsmanager_secret.app_env.id
   secret_string = jsonencode({
-    DOMAIN                       = var.domain_name
-    PORT                         = "3000"
-    ARCHON_DATA                  = "/opt/shiftbloom-archon/data"
-    LOG_LEVEL                    = "info"
-    MAX_CONCURRENT_CONVERSATIONS = "10"
-    DATABASE_URL                 = "postgresql://${var.db_username}:${random_password.db.result}@${aws_db_instance.archon.address}:5432/${var.db_name}?sslmode=require&uselibpqcompat=true"
-    DEFAULT_AI_ASSISTANT         = "claude"
-    CLAUDE_USE_GLOBAL_AUTH       = "false"
-    CLAUDE_CODE_OAUTH_TOKEN      = "REPLACE_ME"
-    CLAUDE_API_KEY               = ""
-    CODEX_ID_TOKEN               = "REPLACE_ME"
-    CODEX_ACCESS_TOKEN           = "REPLACE_ME"
-    CODEX_REFRESH_TOKEN          = "REPLACE_ME"
-    CODEX_ACCOUNT_ID             = "REPLACE_ME"
-    GH_TOKEN                     = "REPLACE_ME"
-    GITHUB_TOKEN                 = "REPLACE_ME"
-    CADDY_BASIC_AUTH_USER        = "admin"
-    CADDY_BASIC_AUTH_HASH        = "REPLACE_ME"
+    DOMAIN                = var.domain_name
+    ACME_EMAIL            = var.acme_email
+    PORT                  = "3000"
+    CONFIG_REPO           = "/opt/myosotis/repo"
+    CADDY_BASIC_AUTH_USER = "admin"
+    CADDY_BASIC_AUTH_HASH = "REPLACE_ME"
   })
 }
 
-resource "aws_instance" "archon" {
+resource "aws_instance" "myosotis" {
   ami                         = data.aws_ami.al2023.id
   instance_type               = var.instance_type
   subnet_id                   = var.public_subnet_id
@@ -192,8 +180,9 @@ resource "aws_instance" "archon" {
               dnf install -y docker git jq
               systemctl enable --now docker
               usermod -aG docker ec2-user
-              mkdir -p /opt/shiftbloom-archon/data
-              chown -R ec2-user:ec2-user /opt/shiftbloom-archon
+              mkdir -p /opt/myosotis /opt/myosotis/data /opt/myosotis/repo
+              chown ec2-user:ec2-user /opt/myosotis
+              chown -R 1001:1001 /opt/myosotis/data /opt/myosotis/repo
               EOF
 
   root_block_device {
@@ -207,11 +196,11 @@ resource "aws_instance" "archon" {
   })
 }
 
-resource "aws_route53_record" "archon" {
+resource "aws_route53_record" "myosotis" {
   count   = var.route53_zone_id != "" ? 1 : 0
   zone_id = var.route53_zone_id
   name    = var.domain_name
   type    = "A"
   ttl     = 300
-  records = [aws_instance.archon.public_ip]
+  records = [aws_instance.myosotis.public_ip]
 }

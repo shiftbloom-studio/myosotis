@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a broken behavior in Myosotis.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the bug and the impact.
+      placeholder: The skills page fails to save when...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open...
+        2. Click...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: OS, browser, deployment mode, branch, commit, logs
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra context
+      description: Screenshots, stack traces, or linked PRs.

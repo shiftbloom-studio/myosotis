@@ -6,5 +6,5 @@ private_subnet_ids = ["subnet-aaaaaaa", "subnet-bbbbbbb"]
 # Optional when using SSM only.
 key_name = ""
 
-domain_name     = "archon.shiftbloom.studio"
+domain_name     = "myosotis.example.com"
 route53_zone_id = ""

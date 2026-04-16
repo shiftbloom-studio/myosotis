@@ -1,0 +1,7 @@
+# Team-managed placeholder for global Myosotis settings.
+# Myosotis primarily uses ~/.myosotis/.myosotis/workflows for global behavior.
+# Keep shared per-machine defaults and future env snippets here.
+
+env:
+  MYOSOTIS_SETUP_VERSION: "v1.0.0"
+

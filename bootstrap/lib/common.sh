@@ -7,11 +7,11 @@ REPO_ROOT="$(cd "${BOOTSTRAP_DIR}/.." && pwd)"
 BACKUP_SUFFIX="$(date +%Y%m%d%H%M%S)"
 
 log() {
-  printf '[shiftbloom-bootstrap] %s\n' "$*"
+  printf '[myosotis-bootstrap] %s\n' "$*"
 }
 
 die() {
-  printf '[shiftbloom-bootstrap] ERROR: %s\n' "$*" >&2
+  printf '[myosotis-bootstrap] ERROR: %s\n' "$*" >&2
   exit 1
 }
 
