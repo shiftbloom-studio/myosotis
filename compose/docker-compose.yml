@@ -1,17 +1,19 @@
 services:
   app:
-    image: ghcr.io/coleam00/archon:latest
+    build:
+      context: ../web
+      dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
       - .env.shared
     environment:
-      ARCHON_DOCKER: "true"
+      CONFIG_ROOT: /app/repo
     ports:
-      - "${PORT:-3000}:${PORT:-3000}"
+      - "${PORT:-3000}:3000"
     volumes:
-      - ${ARCHON_DATA:-/opt/shiftbloom-archon/data}:/.archon
+      - ${CONFIG_REPO:-/opt/shiftbloom-archon/repo}:/app/repo
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}/api/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/mcp-servers"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,4 +47,3 @@ volumes:
 networks:
   archon:
     driver: bridge
-
