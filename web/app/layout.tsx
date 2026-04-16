@@ -18,8 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shiftbloom Archon",
-  description: "Manage shared MCP servers, skills, and instruction packs.",
+  applicationName: "Myosotis",
+  title: "Myosotis",
+  description:
+    "Open-source control surface for MCP servers, skill packs, and AI instruction layers.",
 };
 
 const repoName = path.basename(paths.root);
@@ -43,33 +45,33 @@ export default function RootLayout({
                   <div className="flex items-center gap-3">
                     <Image
                       src="/logo.png"
-                      alt="Shiftbloom Studio Logo"
+                      alt="Myosotis logo"
                       width={44}
                       height={44}
                       className="rounded-xl"
                     />
                     <div>
                       <p className="text-sm font-medium uppercase tracking-[0.28em] text-white/40">
-                        Archon
+                        Myosotis
                       </p>
                       <h1 className="text-xl font-semibold tracking-[-0.04em] text-white">
-                        <span className="gradient-text">shiftbloom</span>{" "}
-                        <span className="text-white">studio.</span>
+                        <span className="text-white">Forget-me-not for your</span>{" "}
+                        <span className="gradient-text">AI workspace.</span>
                       </h1>
                     </div>
                   </div>
                   <div className="space-y-3 text-sm leading-6 text-white/65">
                     <p>
-                      Shared control surface for the team&apos;s MCP profiles,
-                      skill library, and instruction packs.
+                      A git-first workspace for MCP profiles, reusable skills,
+                      and instruction layers.
                     </p>
                     <div className="border-y border-white/10 py-4">
                       <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/40">
-                        Studio Workspace
+                        Open Source Control Surface
                       </p>
                       <p className="mt-2 text-white/55">
-                        Built to edit source-of-truth config and deploy the
-                        Archon setup stack without leaving the repo.
+                        Designed to be forked, customized, and self-hosted
+                        without hiding your configuration behind a database.
                       </p>
                     </div>
                   </div>
@@ -79,6 +81,23 @@ export default function RootLayout({
 
                 <div className="mt-auto space-y-5">
                   <SyncButton />
+                  <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.14)]">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
+                      Built by Shiftbloom
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-white/68">
+                      Let&apos;s build open. Join Shiftbloom Studio and shape
+                      the next generation of creative developer tools.
+                    </p>
+                    <a
+                      href="https://shiftbloom.studio"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-4 inline-flex h-10 items-center rounded-full border border-white/12 px-4 text-sm font-semibold text-white transition hover:border-white/24 hover:bg-white/[0.06]"
+                    >
+                      Join Shiftbloom
+                    </a>
+                  </div>
                   <dl className="grid gap-4 border-t border-white/10 pt-5 text-sm text-white/60">
                     <div>
                       <dt className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/35">
@@ -112,11 +131,11 @@ export default function RootLayout({
                 <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-12">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-primary/80">
-                      Team Setup
+                      Myosotis
                     </p>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      Source-of-truth configuration for the shared Shiftbloom
-                      Archon stack.
+                      Version MCP profiles, skill packs, and instruction layers
+                      from one open workspace.
                     </p>
                   </div>
                   <div className="hidden rounded-full border border-border/70 bg-white/65 px-4 py-2 font-mono text-xs text-muted-foreground shadow-[0_12px_30px_rgba(15,15,15,0.04)] sm:block">

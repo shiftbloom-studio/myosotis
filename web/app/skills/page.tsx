@@ -106,14 +106,14 @@ export default function SkillsPage() {
     <div className="space-y-8">
       <PageIntro
         eyebrow="Skill Library"
-        title="Canonical skill packs for Claude, Codex, and agents."
-        description="Manage reusable SKILL.md directories distributed into the team’s shared agent surfaces. This fixes the old skills workflow by keeping the library index and the editor in a stable two-pane layout."
+        title="Reusable skill packs for Claude, Codex, and any agent surface."
+        description="Manage SKILL.md directories that you can distribute into local or shared agent environments. The library index and the editor stay in a stable two-pane layout so you can treat promptware like real product infrastructure."
         stats={[
           {
             label: "Skill folders",
             value: skills ? String(skills.length).padStart(2, "0") : "—",
           },
-          { label: "Distribution targets", value: "03" },
+          { label: "Targets", value: "03" },
           { label: "Source format", value: "MD" },
         ]}
         details={[

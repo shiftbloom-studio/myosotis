@@ -1,7 +1,22 @@
 {
-  "name": "web",
+  "name": "myosotis-web",
   "version": "0.1.0",
   "private": true,
+  "description": "Open-source control surface for MCP profiles, skill packs, and AI instruction layers.",
+  "homepage": "https://github.com/shiftbloom-studio/shiftbloom-ai-tooling-setup",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shiftbloom-studio/shiftbloom-ai-tooling-setup.git"
+  },
+  "keywords": [
+    "mcp",
+    "claude",
+    "codex",
+    "ai-tools",
+    "nextjs",
+    "open-source",
+    "developer-tools"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

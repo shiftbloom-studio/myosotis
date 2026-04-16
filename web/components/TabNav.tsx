@@ -8,7 +8,7 @@ const tabs = [
   {
     href: "/mcp-servers",
     label: "MCP Servers",
-    description: "Shared command profiles and env placeholders.",
+    description: "Versioned command profiles and environment placeholders.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
@@ -21,7 +21,7 @@ const tabs = [
   {
     href: "/skills",
     label: "Skills",
-    description: "Canonical SKILL.md packs for every surface.",
+    description: "Reusable SKILL.md packs for every agent surface.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -32,7 +32,7 @@ const tabs = [
   {
     href: "/instructions",
     label: "Instructions",
-    description: "Global and project instruction files.",
+    description: "Layered instruction files for global and project scope.",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />

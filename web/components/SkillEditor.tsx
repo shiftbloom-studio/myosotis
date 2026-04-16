@@ -278,7 +278,7 @@ export function SkillEditor({
                 <Input
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="shiftbloom-analytics"
+                  placeholder="browser-observability"
                   className="h-11 rounded-2xl border-border/70 bg-white/70 px-4"
                 />
               </div>

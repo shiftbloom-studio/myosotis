@@ -93,8 +93,8 @@ export default function InstructionsPage() {
     <div className="space-y-8">
       <PageIntro
         eyebrow="Instruction Packs"
-        title="Global and project instructions in one place."
-        description="Edit the canonical Claude and Codex instruction files for both global and project scope. Unsaved tabs remain visible until you write them back to disk."
+        title="Instruction layers for global and project scopes."
+        description="Edit the canonical Claude and Codex instruction files that shape how your tools behave across local and project contexts. Unsaved tabs remain visible until you write them back to disk."
         stats={[
           { label: "Files", value: "04" },
           { label: "Scopes", value: "02" },

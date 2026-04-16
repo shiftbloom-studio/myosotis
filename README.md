@@ -1,63 +1,156 @@
-# Shiftbloom Studio Archon Setup
+# Myosotis
 
-License: AGPL-3.0-only
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-black.svg)](./LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)](https://www.typescriptlang.org/)
+[![Docker Compose](https://img.shields.io/badge/Deploy-Docker_Compose-2496ED)](./compose/docker-compose.yml)
+[![AWS](https://img.shields.io/badge/Infra-AWS-FF9900)](./infra/terraform/aws)
 
-`shiftbloom-archon-setup` is the source of truth for the internal Archon v2 setup at Shiftbloom Studio.
+Myosotis is an open-source control surface for AI-native workspace setup.
 
-It standardizes:
+It gives teams a git-first way to manage:
 
-- the shared Archon stack on AWS
-- the local developer bootstrap for macOS, Linux, and WSL2
-- the project-level Archon anchors (`.archon/`, `AGENTS.md`, `CLAUDE.md`)
-- the global Codex and Claude setup
-- the team MCP profiles and reusable skills
+- MCP server profiles
+- reusable `SKILL.md` packs
+- Claude and Codex instruction layers
+- self-hosted deployment workflows
+
+Instead of hiding this setup behind a database or an internal admin panel, Myosotis keeps the source of truth in plain files you can review, diff, fork, and ship.
+
+> Forget-me-not for your AI workspace.
+
+## Why Myosotis
+
+- Git-first: changes stay readable, reviewable, and easy to revert.
+- File-native: MCP configs, skills, and instructions remain regular repository assets.
+- Self-hostable: local Next.js app, Docker Compose runtime, and AWS EC2 scaffold included.
+- Forkable: bundled starter packs are easy to replace with your own org conventions.
+- Multi-surface: designed for Claude Code, Codex, and custom agent environments.
+
+## What You Can Do
+
+### 1. Manage MCP Profiles
+
+Edit canonical MCP commands, arguments, descriptions, and environment placeholders in one place, then sync them back into versioned JSON templates.
+
+### 2. Curate Skill Libraries
+
+Maintain reusable `SKILL.md` directories for prompt-engineered workflows, domain playbooks, and operational recipes.
+
+### 3. Layer Instructions
+
+Keep global and project instruction files for Claude and Codex side by side, with a UI that makes changes obvious before writing them to disk.
+
+### 4. Self-Host the Workspace
+
+Run the app locally for editing or deploy it to EC2 behind Caddy with the included Docker Compose and Terraform scaffold.
 
 ## Repository Layout
 
-- `compose/` shared-stack runtime for EC2
-- `bootstrap/` local installation and sync scripts
-- `infra/terraform/aws/` AWS infrastructure scaffold
-- `templates/project/` files synchronized into product repositories
-- `templates/global/` files synchronized into developer home directories
+- `web/` Next.js application for the Myosotis workspace
+- `compose/` Docker Compose runtime and deployment helpers
+- `infra/terraform/aws/` AWS scaffold for EC2, RDS, Secrets Manager, and SSM
+- `templates/` global and project instruction templates
 - `mcp/` canonical MCP profile templates
-- `skills/` Shiftbloom team skills
-- `docs/` architecture, onboarding, operations, and rollout guidance
-- `checks/` verification scripts for local, project, and shared-stack setup
+- `skills/` bundled starter skills
+- `bootstrap/` local sync and setup scripts
+- `checks/` verification scripts
+- `docs/` architecture and operations notes
 
-## Operating Model
+## Quick Start
 
-- Shared stack:
-  - `EC2 + Docker Compose`
-  - `RDS PostgreSQL` for Archon metadata only
-  - `AWS Secrets Manager` for runtime secrets
-  - `AWS SSM` for administration
-  - `Caddy` with HTTPS and basic auth for the MVP
-- Local developer setup:
-  - primary platform `macOS`
-  - supported `Linux`
-  - `Windows` only via `WSL2`
-- AI agents:
-  - `Claude Code` and `Codex` are both supported
-  - shared workflows use dedicated service accounts
-  - local work uses each developer's own login
+### Run Locally
 
-## Important Constraints
+```bash
+cd web
+npm install
+npm run dev
+```
 
-- Archon v2 workflow MCP support is currently `Claude-first`. The same profile names are still standardized for Codex, but node-level Archon MCP fields should be treated as Claude-specific until upstream behavior changes.
-- `postgres_ro` is a template for read-only product database access. It must never point at the Archon metadata database.
-- This repository is designed for copy/sync distribution, not symlink or submodule distribution.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Typical Usage
+The UI reads from the repository root by default via `CONFIG_ROOT`, so you can edit the local `mcp/`, `skills/`, and `templates/` directories directly.
 
-1. Provision AWS base infrastructure from `infra/terraform/aws/`.
-2. Prepare the shared stack on the EC2 instance using `compose/`.
-3. Run a local bootstrap from `bootstrap/`.
-4. Sync `templates/project/` into a reference product repository.
-5. Validate the result with the scripts in `checks/`.
+### Build for Production
 
-## First Files to Read
+```bash
+cd web
+npm run lint
+npm run build
+```
 
-- `docs/architecture.md`
-- `docs/aws-shared-stack.md`
-- `docs/onboarding.md`
-- `docs/reference-product-repo.md`
+## Self-Hosting
+
+### Docker Compose
+
+```bash
+cd compose
+cp .env.shared.example .env.shared
+bash deploy.sh
+```
+
+### AWS EC2
+
+The repo ships with a minimal Terraform scaffold for:
+
+- EC2 runtime host
+- RDS PostgreSQL
+- Secrets Manager runtime config
+- IAM + SSM access
+- optional Route53 record
+
+Start here:
+
+```bash
+cd infra/terraform/aws
+cp terraform.tfvars.example terraform.tfvars
+terraform init
+terraform plan
+terraform apply
+```
+
+Then deploy the compose stack on the target host.
+
+## Open-Source Posture
+
+Myosotis is structured to be reusable outside the originating organization.
+
+That means:
+
+- the app branding now stands on its own
+- the setup flow is documented for public self-hosting
+- contributor docs, support docs, and security guidance are included
+- starter assets in `skills/` and `templates/` can be treated as examples, not hard requirements
+
+Some bundled content still reflects the original Shiftbloom Studio conventions. That is intentional: the repo includes a real starter kit, not an empty shell. Replace those examples with your own names, prompts, and workflows as you fork.
+
+## Built by Shiftbloom
+
+Myosotis is maintained by Shiftbloom Studio.
+
+If you want to help shape tools for open creative engineering, design systems, and AI-native workflow infrastructure:
+
+**Let’s build open -> [join Shiftbloom](https://shiftbloom.studio)**
+
+## Contributing
+
+Issues, pull requests, and starter-pack improvements are welcome.
+
+Start with:
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- [SECURITY.md](./SECURITY.md)
+- [SUPPORT.md](./SUPPORT.md)
+
+## Roadmap Ideas
+
+- import/export flows for starter packs
+- multi-workspace support
+- better diff views for prompt and instruction changes
+- starter-pack marketplace patterns
+- deployment presets beyond EC2
+
+## License
+
+Licensed under [AGPL-3.0-only](./LICENSE).

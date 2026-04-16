@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const message =
       (body as { message?: string }).message ??
-      "chore: update team config via Team Setup UI";
+      "chore: update myosotis workspace";
 
     const result = await commitAndPush(message);
     return NextResponse.json({ success: true, data: result });

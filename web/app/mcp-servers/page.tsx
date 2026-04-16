@@ -73,8 +73,8 @@ export default function McpServersPage() {
     <div className="space-y-8">
       <PageIntro
         eyebrow="MCP Registry"
-        title="Shared runtime profiles, ready to sync."
-        description="Update canonical MCP commands, arguments, and environment placeholders for the team. Changes write back to the shared JSON template and the individual profile files under mcp/."
+        title="Composable MCP profiles, versioned in git."
+        description="Manage runtime commands, arguments, and environment placeholders for your MCP stack. Myosotis keeps the source-of-truth in plain files and writes changes back to the shared JSON template plus the individual profiles under mcp/."
         stats={[
           {
             label: "Profiles",
@@ -84,7 +84,7 @@ export default function McpServersPage() {
             label: "Env placeholders",
             value: servers ? String(envVarCount).padStart(2, "0") : "—",
           },
-          { label: "Distribution targets", value: "02" },
+          { label: "File outputs", value: "02" },
         ]}
         details={[
           {
