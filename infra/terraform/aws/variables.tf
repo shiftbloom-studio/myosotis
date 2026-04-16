@@ -61,6 +61,12 @@ variable "domain_name" {
   default     = "myosotis.example.com"
 }
 
+variable "acme_email" {
+  type        = string
+  description = "Email used by Caddy/Let's Encrypt for cert management."
+  default     = "admin@example.com"
+}
+
 variable "db_name" {
   type        = string
   description = "RDS database name."

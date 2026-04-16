@@ -155,24 +155,12 @@ resource "aws_secretsmanager_secret" "app_env" {
 resource "aws_secretsmanager_secret_version" "app_env" {
   secret_id = aws_secretsmanager_secret.app_env.id
   secret_string = jsonencode({
-    DOMAIN                       = var.domain_name
-    PORT                         = "3000"
-    MYOSOTIS_DATA                = "/opt/myosotis/data"
-    LOG_LEVEL                    = "info"
-    MAX_CONCURRENT_CONVERSATIONS = "10"
-    DATABASE_URL                 = "postgresql://${var.db_username}:${random_password.db.result}@${aws_db_instance.myosotis.address}:5432/${var.db_name}?sslmode=require&uselibpqcompat=true"
-    DEFAULT_AI_ASSISTANT         = "claude"
-    CLAUDE_USE_GLOBAL_AUTH       = "false"
-    CLAUDE_CODE_OAUTH_TOKEN      = "REPLACE_ME"
-    CLAUDE_API_KEY               = ""
-    CODEX_ID_TOKEN               = "REPLACE_ME"
-    CODEX_ACCESS_TOKEN           = "REPLACE_ME"
-    CODEX_REFRESH_TOKEN          = "REPLACE_ME"
-    CODEX_ACCOUNT_ID             = "REPLACE_ME"
-    GH_TOKEN                     = "REPLACE_ME"
-    GITHUB_TOKEN                 = "REPLACE_ME"
-    CADDY_BASIC_AUTH_USER        = "admin"
-    CADDY_BASIC_AUTH_HASH        = "REPLACE_ME"
+    DOMAIN                = var.domain_name
+    ACME_EMAIL            = var.acme_email
+    PORT                  = "3000"
+    CONFIG_REPO           = "/opt/myosotis/repo"
+    CADDY_BASIC_AUTH_USER = "admin"
+    CADDY_BASIC_AUTH_HASH = "REPLACE_ME"
   })
 }
 
@@ -192,8 +180,9 @@ resource "aws_instance" "myosotis" {
               dnf install -y docker git jq
               systemctl enable --now docker
               usermod -aG docker ec2-user
-              mkdir -p /opt/myosotis/data
-              chown -R ec2-user:ec2-user /opt/myosotis
+              mkdir -p /opt/myosotis /opt/myosotis/data /opt/myosotis/repo
+              chown ec2-user:ec2-user /opt/myosotis
+              chown -R 1001:1001 /opt/myosotis/data /opt/myosotis/repo
               EOF
 
   root_block_device {

@@ -13,6 +13,6 @@ Use the same names in:
 
 - Codex global configuration
 - Claude global configuration
-- repository-local `.archon/mcp/` files
+- repository-local `.myosotis/mcp/` files
 
 `postgres_ro` must remain read-only and must not target the Archon metadata database.

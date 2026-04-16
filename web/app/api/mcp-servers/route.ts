@@ -4,6 +4,22 @@ import path from "node:path";
 import { paths } from "@/lib/config-paths";
 import { mcpServersFileSchema, type McpServersFile } from "@/lib/validators";
 
+const MCP_SERVER_NAME_PATTERN = /^[a-z0-9_-]+$/;
+
+function getMcpProfilePath(name: string): string {
+  if (!MCP_SERVER_NAME_PATTERN.test(name)) {
+    throw new Error(`Invalid MCP server name: ${name}`);
+  }
+
+  const root = path.resolve(paths.mcpDir);
+  const profilePath = path.resolve(root, `${name}.json`);
+  if (!profilePath.startsWith(`${root}${path.sep}`)) {
+    throw new Error(`Invalid MCP server path for: ${name}`);
+  }
+
+  return profilePath;
+}
+
 async function readMcpServers(): Promise<McpServersFile> {
   const raw = await fs.readFile(paths.mcpServersJson, "utf-8");
   return mcpServersFileSchema.parse(JSON.parse(raw));
@@ -19,7 +35,7 @@ async function writeMcpServers(data: McpServersFile): Promise<void> {
   // Also write individual profile files under mcp/
   await fs.mkdir(paths.mcpDir, { recursive: true });
   for (const [name, server] of Object.entries(data.mcpServers)) {
-    const profilePath = path.join(paths.mcpDir, `${name}.json`);
+    const profilePath = getMcpProfilePath(name);
     const profile = {
       command: server.command,
       args: server.args,
@@ -34,13 +50,18 @@ async function writeMcpServers(data: McpServersFile): Promise<void> {
   }
 
   // Remove orphan profile files
-  const files = await fs.readdir(paths.mcpDir);
+  const files = await fs.readdir(paths.mcpDir, { withFileTypes: true });
   const validNames = new Set(Object.keys(data.mcpServers));
   for (const file of files) {
-    if (file === "README.md") continue;
-    const name = path.basename(file, ".json");
+    if (!file.isFile() || !file.name.endsWith(".json")) continue;
+
+    const name = path.basename(file.name, ".json");
     if (!validNames.has(name)) {
-      await fs.unlink(path.join(paths.mcpDir, file));
+      try {
+        await fs.unlink(path.join(paths.mcpDir, file.name));
+      } catch {
+        // Ignore delete failures for non-critical orphan cleanup.
+      }
     }
   }
 }

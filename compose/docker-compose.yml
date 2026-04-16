@@ -13,7 +13,7 @@ services:
     volumes:
       - ${CONFIG_REPO:-/opt/myosotis/repo}:/app/repo
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/mcp-servers"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3

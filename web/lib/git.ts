@@ -38,7 +38,7 @@ export async function commitAndPush(message: string): Promise<SyncResult> {
     };
   }
 
-  await git.add(changedFiles);
+  await git.add(["-A"]);
   const commit = await git.commit(message);
   await git.push();
 
