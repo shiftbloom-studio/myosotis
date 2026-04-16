@@ -8,13 +8,13 @@ const MCP_SERVER_NAME_PATTERN = /^[a-z0-9_-]+$/;
 
 function getMcpProfilePath(name: string): string {
   if (!MCP_SERVER_NAME_PATTERN.test(name)) {
-    throw new Error(`Invalid MCP server name: ${name}`);
+    throw new Error("Invalid MCP server name");
   }
 
   const root = path.resolve(paths.mcpDir);
   const profilePath = path.resolve(root, `${name}.json`);
   if (!profilePath.startsWith(`${root}${path.sep}`)) {
-    throw new Error(`Invalid MCP server path for: ${name}`);
+    throw new Error("Invalid MCP server path");
   }
 
   return profilePath;
