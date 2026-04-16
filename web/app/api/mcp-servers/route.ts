@@ -13,7 +13,8 @@ function getMcpProfilePath(name: string): string {
 
   const root = path.resolve(paths.mcpDir);
   const profilePath = path.resolve(root, `${name}.json`);
-  if (path.dirname(profilePath) !== root) {
+  const relativePath = path.relative(root, profilePath);
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
     throw new Error("Invalid MCP server path");
   }
 
