@@ -1,6 +1,6 @@
 # Myosotis
 
-[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-black.svg)](./LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-black.svg)](./LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)](https://www.typescriptlang.org/)
 [![Docker Compose](https://img.shields.io/badge/Deploy-Docker_Compose-2496ED)](./compose/docker-compose.yml)
@@ -17,7 +17,7 @@ It gives teams a git-first way to manage:
 
 Instead of hiding this setup behind a database or an internal admin panel, Myosotis keeps the source of truth in plain files you can review, diff, fork, and ship.
 
-> Forget-me-not for your AI workspace.
+> Your Team, Your AI Workspace.
 
 ## Why Myosotis
 
@@ -153,4 +153,4 @@ Start with:
 
 ## License
 
-Licensed under [AGPL-3.0-only](./LICENSE).
+Licensed under [Apache License 2.0](./LICENSE).

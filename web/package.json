@@ -2,6 +2,7 @@
   "name": "myosotis-web",
   "version": "0.1.0",
   "private": true,
+  "license": "Apache-2.0",
   "description": "Open-source control surface for MCP profiles, skill packs, and AI instruction layers.",
   "homepage": "https://github.com/shiftbloom-studio/shiftbloom-ai-tooling-setup",
   "repository": {

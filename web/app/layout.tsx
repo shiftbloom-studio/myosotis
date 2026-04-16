@@ -55,8 +55,8 @@ export default function RootLayout({
                         Myosotis
                       </p>
                       <h1 className="text-xl font-semibold tracking-[-0.04em] text-white">
-                        <span className="text-white">Forget-me-not for your</span>{" "}
-                        <span className="gradient-text">AI workspace.</span>
+                        <span className="text-white">Your Team, Your</span>{" "}
+                        <span className="gradient-text">AI Workspace</span>
                       </h1>
                     </div>
                   </div>
@@ -81,23 +81,6 @@ export default function RootLayout({
 
                 <div className="mt-auto space-y-5">
                   <SyncButton />
-                  <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.14)]">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/35">
-                      Built by Shiftbloom
-                    </p>
-                    <p className="mt-3 text-sm leading-6 text-white/68">
-                      Let&apos;s build open. Join Shiftbloom Studio and shape
-                      the next generation of creative developer tools.
-                    </p>
-                    <a
-                      href="https://shiftbloom.studio"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-4 inline-flex h-10 items-center rounded-full border border-white/12 px-4 text-sm font-semibold text-white transition hover:border-white/24 hover:bg-white/[0.06]"
-                    >
-                      Join Shiftbloom
-                    </a>
-                  </div>
                   <dl className="grid gap-4 border-t border-white/10 pt-5 text-sm text-white/60">
                     <div>
                       <dt className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/35">
@@ -146,6 +129,19 @@ export default function RootLayout({
 
               <main className="mx-auto w-full max-w-7xl px-6 py-8 lg:px-12 lg:py-10">
                 {children}
+                <footer className="mt-12 border-t border-border/70 pt-5">
+                  <a
+                    href="https://shiftbloom.studio"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex text-sm font-medium tracking-[-0.01em] text-muted-foreground transition hover:text-foreground"
+                  >
+                    <span className="mr-2 text-muted-foreground">
+                      Let&apos;s build open
+                    </span>
+                    <span className="gradient-text">join Shiftbloom</span>
+                  </a>
+                </footer>
               </main>
             </div>
           </div>
