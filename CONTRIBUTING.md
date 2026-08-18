@@ -4,6 +4,27 @@ Thanks for contributing.
 
 Myosotis is designed to stay easy to fork, inspect, and self-host, so contributions should preserve that bias toward simplicity and readable files.
 
+## First evening
+
+Stay in this repository. You do not need AWS credentials, Terraform, or Docker Compose.
+
+1. Read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) and [SECURITY.md](./SECURITY.md).
+2. Run the control surface from `web/`:
+
+   ```bash
+   cd web
+   npm install
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000). The UI reads `mcp/`, `skills/`, and `templates/` from the repository root via `CONFIG_ROOT`.
+3. Make one small in-repo change, then confirm it in the UI:
+   - edit a skill under `skills/` (for example `skills/backend/SKILL.md`), or
+   - edit an MCP profile under `mcp/` (for example `mcp/github.json`).
+4. Open a pull request. Run `npm run lint` and `npm run build` in `web/` first.
+
+AWS, Terraform, and Docker Compose live in the README Self-Hosting section and are too large for a first evening.
+
 ## Development Setup
 
 ```bash
