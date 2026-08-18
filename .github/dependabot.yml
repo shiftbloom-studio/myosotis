@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    labels:
+      - dependabot
+
+  - package-ecosystem: terraform
+    directory: /infra/terraform/aws
+    schedule:
+      interval: weekly
+    labels:
+      - dependabot
