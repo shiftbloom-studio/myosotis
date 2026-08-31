@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+# A busy Dependabot queue produces many stale runs; only the newest commit matters.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web (install, lint, typecheck, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          # Pin to the Node major used by web/Dockerfile (node:22-alpine).
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # `npm ci` (not `npm install`) so CI installs exactly what the lockfile
+      # pins. This is what catches the peer-dependency breakage that silently
+      # reached main: react-dom required react ^19.2.8 while react stayed at
+      # 19.2.4, making the dependency tree unresolvable.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+  terraform:
+    name: Terraform (format, validate)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform/aws
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.0"
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive
+
+      # -backend=false: this repo intentionally has no backend and no deployed
+      # infrastructure. Validating config only, so the job needs no AWS
+      # credentials and can never reach real AWS APIs.
+      - name: Initialize (no backend)
+        run: terraform init -backend=false
+
+      - name: Validate
+        run: terraform validate
